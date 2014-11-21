@@ -23,11 +23,6 @@ if(typeof(manager) === "undefined") {
 var app = express();
 app.set('port', process.env.PORT || 3000);
 
-// Set up request routing
-app.get("/", function (req, res) {
-	res.sendfile(__dirname + "/index.html");
-});
-
 app.get("/supported", function (req, res) {
 	res.json(hmd.getSupportedDevices());
 });
@@ -36,6 +31,14 @@ app.get("/info", function (req, res) {
 	manager.getDeviceInfo(function(err, deviceInfo) {
 		res.json(deviceInfo);
 	});
+});
+
+app.get("/", function(req, res) {
+	res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+	res.json({quat: manager.getDeviceQuatSync(), position: manager.getDevicePositionSync()})
 });
 
 app.get("/orientation", function (req, res) {
